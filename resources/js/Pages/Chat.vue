@@ -12,19 +12,17 @@
                    <!--Listagem de usuarios-->
                     <div class="w-3/12 bg-gray-200 bg-opacity-25 border-r border-gray-200 overflow-y-scroll">
                         <ul>
-                            <li class="p-6 text-lg text-gray-600 leading-7 font-semibold border-b border-gray-200 hover:bg-gray-200 hover: bg-opacity-50 hover: cursor-pointer">
+                            
+                            <li 
+                            v-for="user in users" :key="user.id"
+                            class="p-6 text-lg text-gray-600 leading-7 font-semibold border-b border-gray-200 hover:bg-gray-200 hover: bg-opacity-50 hover: cursor-pointer">
                                 <p class="flex items-center">
-                                    Jessica Catarina
+                                   {{user.name}}
                                     <span class="ml-2 w-2 h-2 bg-blue-500 rounded-full"></span>
                                 </p>
                             </li>
 
-                            <li class="p-6 text-lg text-gray-600 leading-7 font-semibold border-b border-gray-200 hover:bg-gray-200 hover: bg-opacity-50 hover: cursor-pointer">
-                                <p class="flex items-center">
-                                    Napoleão José
-                                    <span class="ml-2 w-2 h-2 bg-blue-500 rounded-full"></span>
-                                </p>
-                            </li>
+                           
 
                         </ul>
 
@@ -48,7 +46,6 @@
                                 Oi !!   
                             </p>
                             <span class="block mt-1 text-xs text-gray-500">27/12/2020 13:37</span>
-                            
                         </div>
                        
                         
@@ -74,7 +71,7 @@
 
 <script>
     import AppLayout from '@/Layouts/AppLayout'
-import Input from '../Jetstream/Input.vue'
+
     
 
     export default {
@@ -82,8 +79,22 @@ import Input from '../Jetstream/Input.vue'
             AppLayout,
          
         },
-    
-                Input}
+        data(){
+            return{
+                users: []
+            }
+        },
+        mounted(){
+            axios.get('api/users').then(Response => {
+                this.users = Response.data.users
+                console.log(Response)
+            })
+        }
+        
+                }
+                
+                
+
 </script>
 
 <style>
