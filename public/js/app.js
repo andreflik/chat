@@ -3486,6 +3486,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -3493,15 +3500,29 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      users: []
+      users: [],
+      messages: [],
+      userActive: {}
     };
   },
-  mounted: function mounted() {
-    var _this = this;
+  methods: {
+    loadMessages: function loadMessages(userId) {
+      var _this = this;
 
-    axios.get('api/users').then(function (Response) {
-      _this.users = Response.data.users;
-      console.log(Response);
+      axios.get("api/users/".concat(userId)).then(function (response) {
+        _this.userActive = response.data.user;
+      });
+      axios.get("api/messages/".concat(userId)).then(function (response) {
+        _this.messages = response.data.messages;
+      });
+    }
+  },
+  mounted: function mounted() {
+    var _this2 = this;
+
+    axios.get('api/users').then(function (response) {
+      _this2.users = response.data.users;
+      console.log(response);
     });
   }
 });
@@ -48353,7 +48374,12 @@ var render = function() {
                         {
                           key: user.id,
                           staticClass:
-                            "p-6 text-lg text-gray-600 leading-7 font-semibold border-b border-gray-200 hover:bg-gray-200 hover: bg-opacity-50 hover: cursor-pointer"
+                            "p-6 text-lg text-gray-600 leading-7 font-semibold border-b border-gray-200 hover:bg-gray-200 hover: bg-opacity-50 hover: cursor-pointer",
+                          on: {
+                            click: function() {
+                              _vm.loadMessages(user.id)
+                            }
+                          }
                         },
                         [
                           _c("p", { staticClass: "flex items-center" }, [
@@ -48379,46 +48405,35 @@ var render = function() {
                 "div",
                 { staticClass: "w-9/12 flex flex-col justify-between" },
                 [
-                  _c(
-                    "div",
-                    {
-                      staticClass: "w-full p-6 flex flex-col overflow-y-scroll"
-                    },
-                    [
-                      _c("div", { staticClass: "w-full mb-3 text-right " }, [
-                        _c(
-                          "p",
-                          {
-                            staticClass:
-                              "inline-block p-2 rounded-md messageFromMe",
-                            staticStyle: { "max-width": "75%" }
-                          },
-                          [
-                            _vm._v(
-                              "\n                            Olá !! \n                        "
-                            )
-                          ]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "span",
-                          { staticClass: "block mt-1 text-xs text-gray-500" },
-                          [_vm._v("27/12/2020 13:37")]
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "w-full p-6 flex flex-col" }, [
+                  _vm._l(_vm.messages, function(message) {
+                    return _c(
+                      "div",
+                      {
+                        key: message.id,
+                        staticClass:
+                          "w-full p-6 flex flex-col overflow-y-scroll",
+                        class:
+                          message.from == _vm.$page.auth.user.id
+                            ? "text-right"
+                            : ""
+                      },
+                      [
                         _c("div", { staticClass: "w-full mb-3" }, [
                           _c(
                             "p",
                             {
-                              staticClass:
-                                "inline-block p-2 rounded-md messageToMe",
+                              staticClass: "inline-block p-2 rounded-md",
+                              class:
+                                message.from == _vm.$page.auth.user.id
+                                  ? "messageFromMe"
+                                  : "messageToMe",
                               staticStyle: { "max-width": "75%" }
                             },
                             [
                               _vm._v(
-                                "\n                            Oi !!   \n                        "
+                                "\n                           " +
+                                  _vm._s(message.content) +
+                                  " \n                        "
                               )
                             ]
                           ),
@@ -48426,12 +48441,33 @@ var render = function() {
                           _c(
                             "span",
                             { staticClass: "block mt-1 text-xs text-gray-500" },
-                            [_vm._v("27/12/2020 13:37")]
+                            [
+                              _vm._v(
+                                _vm._s(_vm._f("formatDate")(message.created_at))
+                              )
+                            ]
                           )
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "w-full p-6 flex flex-col" }, [
+                          _c("div", { staticClass: "w-full mb-3" }, [
+                            _c("p", {
+                              staticClass: "inline-block p-2 rounded-md",
+                              staticStyle: { "max-width": "75%" }
+                            }),
+                            _vm._v(" "),
+                            _c(
+                              "span",
+                              {
+                                staticClass: "block mt-1 text-xs text-gray-500"
+                              },
+                              [_vm._v(_vm._s(message.created_at))]
+                            )
+                          ])
                         ])
-                      ])
-                    ]
-                  ),
+                      ]
+                    )
+                  }),
                   _vm._v(" "),
                   _c(
                     "div",
@@ -48468,7 +48504,8 @@ var render = function() {
                       ])
                     ]
                   )
-                ]
+                ],
+                2
               )
             ]
           )
@@ -64292,6 +64329,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var laravel_jetstream__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(laravel_jetstream__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var portal_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! portal-vue */ "./node_modules/portal-vue/dist/portal-vue.common.js");
 /* harmony import */ var portal_vue__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(portal_vue__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_4__);
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
@@ -64300,6 +64339,13 @@ __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 
 
 
+
+moment__WEBPACK_IMPORTED_MODULE_4___default.a.locale("pt-br");
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.filter('formatDate', function (value) {
+  if (value) {
+    return moment__WEBPACK_IMPORTED_MODULE_4___default()(value).format('DD//MM/YYYY HH:mm');
+  }
+});
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.mixin({
   methods: {
     route: route
